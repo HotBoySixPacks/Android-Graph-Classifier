@@ -276,5 +276,5 @@ if __name__ == "__main__":
         files = [x for x in current_dir.iterdir() if x.is_file()]
         print(f"APK: {len(files)}")
         print(f"Starting dataset processing with {n_jobs} Jobs:Direactory {label}")
-        J.Parallel(n_jobs=n_jobs)(J.delayed(process)(x, dest_dir/label) for x in tqdm(files[:5]))
+        J.Parallel(n_jobs=n_jobs)(J.delayed(process)(x, dest_dir/label) for x in tqdm(files))
         print("DONE")
