@@ -265,11 +265,16 @@ if __name__ == "__main__":
     args = parser.parse_args()
     source_dir = Path(args.source_dir)
     dest_dir = Path(args.dest_dir)
+    print(f"Start read data from {source_dir} to {dest_dir}")
     n_jobs = multiprocessing.cpu_count()
-    files = [x for x in source_dir.iterdir() if x.is_file()]
-    source_files = set([x for x in files])
-    unprocessed = [source_dir / f"{x}" for x in source_files]
-    print(f"APK: {len(source_files)}")
-    print(f"Starting dataset processing with {n_jobs} Jobs")
-    J.Parallel(n_jobs=n_jobs)(J.delayed(process)(x, dest_dir) for x in unprocessed)
-    print("DONE")
+    for current_dir in source_dir.iterdir():
+        if current_dir.is_file():
+            continue
+        label = current_dir.stem
+        if not  os.path.exists(dest_dir/label):
+            os.makedirs(dest_dir/label)
+        files = [x for x in current_dir.iterdir() if x.is_file()]
+        print(f"APK: {len(files)}")
+        print(f"Starting dataset processing with {n_jobs} Jobs:Direactory {label}")
+        J.Parallel(n_jobs=n_jobs)(J.delayed(process)(x, dest_dir/label) for x in tqdm(files[:5]))
+        print("DONE")
